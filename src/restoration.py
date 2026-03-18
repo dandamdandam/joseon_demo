@@ -1,0 +1,472 @@
+def joseon_restoration_page() -> None:
+    import time
+    import random
+    from pathlib import Path
+
+    import streamlit as st
+
+    st.markdown(
+        """
+        <style>
+        /* Base Container & Animation */
+        
+        .hero-title {
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(120deg, #1E50A3, #2960b4, #123e85);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            line-height: 1.1;
+        }
+        
+        .hero-sub {
+            color: #64748b;
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+
+        /* Modern KPI Cards */
+        .kpi-wrap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin: 12px 0 32px 0;
+        }
+        
+        .kpi {
+            border: 1px solid rgba(137, 197, 213, 0.4);
+            border-radius: 20px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .kpi:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(30, 80, 163, 0.08), 0 4px 6px -4px rgba(30, 80, 163, 0.04);
+            border-color: rgba(30, 80, 163, 0.4);
+        }
+        
+        .kpi .k {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1E50A3;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 4px 0;
+        }
+        
+        .kpi .v {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+            letter-spacing: -0.3px;
+        }
+
+        /* Section Titles with Accent */
+        p.section-title {
+            display: flex;
+            align-items: center;
+            font-size: 28px !important;
+            font-weight: 900 !important;
+            color: #0f172a !important;
+            letter-spacing: -0.5px !important;
+            margin: 32px 0 16px 0 !important;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(137, 197, 213, 0.3);
+        }
+        
+        .section-num {
+            color: #1E50A3;
+            margin-right: 12px;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            color: #ffffff;
+            background: #89C5D5;
+            margin-left: 16px;
+            transform: translateY(-1px);
+        }
+
+        /* Panel Styling */
+        .panel-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1E50A3;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.3px;
+        }
+        
+        .panel-sub {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0 0 16px 0;
+        }
+
+        /* Streamlit Button Overrides */
+        div.stButton > button {
+            border-radius: 12px;
+            font-weight: 700;
+            padding: 4px 24px;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(137, 197, 213, 0.6);
+            background: #ffffff;
+            color: #1E50A3;
+        }
+        
+        div.stButton > button:hover {
+            border-color: #1E50A3;
+            color: #1E50A3;
+            background: rgba(137, 197, 213, 0.1);
+        }
+        
+        div.stButton > button[kind="primary"] {
+            background: linear-gradient(135deg, #1E50A3, #2960b4);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(30, 80, 163, 0.3);
+        }
+        
+        div.stButton > button[kind="primary"]:hover {
+            background: linear-gradient(135deg, #FF9696, #ff7a7a); /* Point color on hover */
+            color: white;
+            box-shadow: 0 6px 16px rgba(255, 150, 150, 0.4);
+            transform: translateY(-1px);
+            border: none;
+        }
+
+        /* restored token highlight */
+        .hl{
+            color: #FF9696;
+            font-weight: 950;
+            background: rgba(255, 150, 150, 0.1);
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        /* ===== Candidate Cards (VIEW ONLY) ===== */
+        .candidate-card{
+            border: 1px solid rgba(137, 197, 213, 0.4);
+            border-top: 4px solid #1E50A3;
+            border-radius: 16px;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(30, 80, 163, 0.05);
+            margin-bottom: 16px;
+            height: calc(100% - 16px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .candidate-card:hover{
+            transform: translateY(-2px) !important;
+            box-shadow: 0 10px 15px -3px rgba(30, 80, 163, 0.08), 0 4px 6px -4px rgba(30, 80, 163, 0.04) !important;
+            border-color: rgba(30, 80, 163, 0.4) !important;
+        }
+
+        .candidate-rank{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-weight: 800;
+            font-size: 15px;
+            color: #1E50A3;
+            border-bottom: 1px dashed rgba(137, 197, 213, 0.5);
+            padding-bottom: 8px;
+        }
+        .candidate-text{
+            font-size: 18px;
+            line-height: 1.7;
+            color: #1e293b;
+        }
+
+        /* Alert/Info Overrides */
+        div[data-testid="stAlert"] {
+            border-radius: 12px;
+            border: none;
+            background-color: rgba(137, 197, 213, 0.15);
+            color: #1E50A3;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    def uploaded_stem(u) -> str:
+        try:
+            return Path(u.name).stem
+        except Exception:
+            return ""
+
+    def highlight_restored_name_2(sentence: str) -> str:
+        key = "大司諫鄭"
+        i = sentence.find(key)
+        if i == -1:
+            return sentence
+        j = i + len(key)
+        if j + 2 > len(sentence):
+            return sentence
+        restored = sentence[j : j + 2]
+        return sentence[:j] + f'<span class="hl">{restored}</span>' + sentence[j + 2 :]
+
+    def highlight_restored_place_3(sentence: str) -> str:
+        key = "上御"
+        i = sentence.find(key)
+        if i == -1:
+            return sentence
+        j = i + len(key)
+        if j + 3 > len(sentence):
+            return sentence
+        restored = sentence[j : j + 3]
+        return sentence[:j] + f'<span class="hl">{restored}</span>' + sentence[j + 3 :]
+
+    def highlight_before_phrase_2(sentence: str, phrase: str) -> str:
+        k = sentence.find(phrase)
+        if k == -1 or k < 2:
+            return sentence
+        restored = sentence[k - 2 : k]
+        return sentence[: k - 2] + f'<span class="hl">{restored}</span>' + sentence[k:]
+
+    st.markdown(
+    '<div class="hero-title">ARI: Restoration for Joseon Historical Documents</div>',
+    unsafe_allow_html=True
+)
+
+    st.markdown(
+        '<div class="hero-sub">조선시대 고문서의 훼손 이미지 업로드 시, OCR 및 ARI 기반 복원을 진행하여 상위 10개의 복원 후보를 생성합니다.</div>',
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+        <div class="kpi-wrap">
+            <div class="kpi"><p class="k">복원 파이프라인</p><p class="v">이미지 → OCR → 복원</p></div>
+            <div class="kpi"><p class="k">결과</p><p class="v">상위 10개의 복원 후보</p></div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # ---------------- Step 1 ----------------
+    st.markdown(
+        '<p class="section-title"><span class="section-num">1)</span><span class="section-text">이미지 업로드 및 OCR</span> <span class="badge">Step 1</span></p>',
+        unsafe_allow_html=True,
+    )
+
+    uploaded = st.file_uploader(
+        "조선 고문서 이미지 업로드",
+        type=["png", "jpg", "jpeg", "webp"],
+        key="joseon_image_uploader",
+        label_visibility="collapsed",
+    )
+
+    if uploaded is None:
+        st.info("이미지를 업로드하면 OCR 처리된 텍스트 확인이 가능합니다.")
+        st.markdown("---")
+        st.markdown(
+            '<p class="section-title"><span class="section-num">2)</span><span class="section-text">조선 고문서 복원</span> <span class="badge">Step 2</span></p>',
+            unsafe_allow_html=True,
+        )
+        st.warning("먼저 이미지를 업로드해 주세요.")
+        return
+
+    stem = uploaded_stem(uploaded)
+    is_jrs_1661_4_3 = stem == "jrs_1661_4_3"
+    is_jrs_1883_3_17 = stem == "jrs_1883_3_17"
+    is_jrs_1701_11_29 = stem == "jrs_1701_11_29"
+
+    left, right = st.columns([1, 1], gap="large")
+
+    with left:
+        st.markdown('<div class="panel-title">이미지 미리보기</div>', unsafe_allow_html=True)
+        st.image(uploaded, use_container_width=True)
+
+    with right:
+        st.markdown('<div class="panel-title">OCR 결과</div>', unsafe_allow_html=True)
+        st.markdown('<div class="panel-sub">OCR 실행 후 결과를 확인할 수 있습니다.</div>', unsafe_allow_html=True)
+
+        c1, c2 = st.columns([1, 1])
+        with c1:
+            run_ocr = st.button("OCR 실행", use_container_width=True, key="run_ocr_btn")
+        with c2:
+            clear_ocr = st.button("결과 초기화", use_container_width=True, key="clear_ocr_btn")
+
+        if clear_ocr:
+            st.session_state.pop("joseon_ocr_text", None)
+            st.session_state.pop("joseon_restoration_candidates", None)
+            st.session_state.pop("joseon_selected_candidate_idx", None)
+            st.session_state.pop("joseon_restored_text", None)
+
+        if run_ocr:
+            with st.spinner("OCR 진행중..."):
+                time.sleep(random.uniform(2.5, 3.5))
+
+            if is_jrs_1661_4_3:
+                st.session_state["joseon_ocr_text"] = (
+                    "大司諫鄭□□上疏. 大槪, 冒萬死更陳危懇, 乞賜遞免, 仍治臣罪事. 入啓."
+                )
+            elif is_jrs_1883_3_17:
+                st.session_state["joseon_ocr_text"] = (
+                    "癸未三月十七日時, 上御□□□. 時原任大臣請對入侍時."
+                )
+            elif is_jrs_1701_11_29:
+                st.session_state["joseon_ocr_text"] = (
+                    "又啓曰, 臺諫闕員, 今當差出, 而擬望之人乏少, □□中未準限人員竝擬, 何如? 傳曰, 允."
+                )
+            else:
+                st.session_state["joseon_ocr_text"] = (
+                    "◆啓曰, 右副承旨李軒卿, 今日不爲仕進, 卽爲牌招, 何如? "
+                    "傳曰, 允. 又啓曰, 以今日政院例爲之, 仍爲傳敎, 何如? 傳曰, 允."
+                )
+            st.success("OCR 완료")
+
+        ocr_text = st.session_state.get("joseon_ocr_text", "")
+        if ocr_text:
+            st.text_area("ocr_text_area", ocr_text, height=180, label_visibility="collapsed")
+        else:
+            st.info("OCR을 실행하여 결과를 생성해 주세요.")
+
+    st.markdown("---")
+
+    # ---------------- Step 2 ----------------
+    st.markdown(
+        '<p class="section-title"><span class="section-num">2)</span><span class="section-text">복원</span> <span class="badge">Step 2</span></p>',
+        unsafe_allow_html=True,
+    )
+    st.caption("OCR 결과를 입력으로 받아 ARI가 복원 후보를 생성합니다.")
+
+    ocr_text = st.session_state.get("joseon_ocr_text", "")
+    if not ocr_text:
+        st.warning("먼저 OCR을 실행해 주세요.")
+        return
+
+    st.markdown('<div class="panel-title">훼손 문서</div>', unsafe_allow_html=True)
+    st.text_area("damaged_from_ocr", ocr_text, height=120, label_visibility="collapsed")
+
+    a, b = st.columns([1, 1])
+    with a:
+        run_restore = st.button("복원 실행", use_container_width=True, key="run_restoration_btn")
+    with b:
+        reset_all = st.button("결과 초기화", use_container_width=True, key="reset_restoration_btn")
+
+    if reset_all:
+        st.session_state.pop("joseon_ocr_text", None)
+        st.session_state.pop("joseon_restoration_candidates", None)
+        st.session_state.pop("joseon_selected_candidate_idx", None)
+        st.session_state.pop("joseon_restored_text", None)
+        st.success("Session reset.")
+        return
+
+    if run_restore:
+        with st.spinner("손상된 문서 복원 중..."):
+            time.sleep(random.uniform(2.5, 3.5))
+
+        if is_jrs_1661_4_3:
+            st.session_state["joseon_restoration_candidates"] = [
+                "大司諫鄭萬和上疏. 大槪, 冒萬死更陳危懇, 乞賜遞免, 仍治臣罪事. 入啓.",
+                "大司諫鄭知始上疏. 大槪, 冒萬死更陳危懇, 乞賜遞免, 仍治臣罪事. 入啓.",
+                "大司諫鄭麟信上疏. 大槪, 冒萬死更陳危懇, 乞賜遞免, 仍治臣罪事. 入啓.",
+                "大司諫鄭基衡上疏. 大槪, 冒萬死更陳危懇, 乞賜遞免, 仍治臣罪事. 入啓.",
+                "大司諫鄭繼容上疏. 大槪, 冒萬死更陳危懇, 乞賜遞免, 仍治臣罪事. 入啓.",
+                "大司諫鄭太重上疏. 大槪, 冒萬死更陳危懇, 乞賜遞免, 仍治臣罪事. 入啓.",
+                "大司諫鄭之基上疏. 大槪, 冒萬死更陳危懇, 乞賜遞免, 仍治臣罪事. 入啓.",
+                "大司諫鄭百壽上疏. 大槪, 冒萬死更陳危懇, 乞賜遞免, 仍治臣罪事. 入啓.",
+                "大司諫鄭維宗上疏. 大槪, 冒萬死更陳危懇, 乞賜遞免, 仍治臣罪事. 入啓.",
+                "大司諫鄭斗一上疏. 大槪, 冒萬死更陳危懇, 乞賜遞免, 仍治臣罪事. 入啓.",
+            ]
+        elif is_jrs_1883_3_17:
+            st.session_state["joseon_restoration_candidates"] = [
+                "癸未三月十七日時, 上御熙政堂. 時原任大臣請對入侍時.",
+                "癸未三月十七日時, 上御仁正殿. 時原任大臣請對入侍時.",
+                "癸未三月十七日時, 上御勤春門. 時原任大臣請對入侍時.",
+                "癸未三月十七日時, 上御崇德廳. 時原任大臣請對入侍時.",
+                "癸未三月十七日時, 上御景東臺. 時原任大臣請對入侍時.",
+                "癸未三月十七日時, 上御觀成樓. 時原任大臣請對入侍時.",
+                "癸未三月十七日時, 上御慶慶東. 時原任大臣請對入侍時.",
+                "癸未三月十七日時, 上御宣載歷. 時原任大臣請對入侍時.",
+                "癸未三月十七日時, 上御養泰室. 時原任大臣請對入侍時.",
+                "癸未三月十七日時, 上御大明宮. 時原任大臣請對入侍時.",
+            ]
+        elif is_jrs_1701_11_29:
+            st.session_state["joseon_restoration_candidates"] = [
+                "又啓曰, 臺諫闕員, 今當差出, 而擬望之人乏少, 守令中未準限人員竝擬, 何如? 傳曰, 允.",
+                "又啓曰, 臺諫闕員, 今當差出, 而擬望之人乏少, 承宰中未準限人員竝擬, 何如? 傳曰, 允.",
+                "又啓曰, 臺諫闕員, 今當差出, 而擬望之人乏少, 玉臣中未準限人員竝擬, 何如? 傳曰, 允.",
+                "又啓曰, 臺諫闕員, 今當差出, 而擬望之人乏少, 外列中未準限人員竝擬, 何如? 傳曰, 允.",
+                "又啓曰, 臺諫闕員, 今當差出, 而擬望之人乏少, 禁陵中未準限人員竝擬, 何如? 傳曰, 允.",
+                "又啓曰, 臺諫闕員, 今當差出, 而擬望之人乏少, 武護中未準限人員竝擬, 何如? 傳曰, 允.",
+                "又啓曰, 臺諫闕員, 今當差出, 而擬望之人乏少, 京牧中未準限人員竝擬, 何如? 傳曰, 允.",
+                "又啓曰, 臺諫闕員, 今當差出, 而擬望之人乏少, 畿領中未準限人員竝擬, 何如? 傳曰, 允.",
+                "又啓曰, 臺諫闕員, 今當差出, 而擬望之人乏少, 臺道中未準限人員竝擬, 何如? 傳曰, 允.",
+                "又啓曰, 臺諫闕員, 今當差出, 而擬望之人乏少, 南中中未準限人員竝擬, 何如? 傳曰, 允.",
+            ]
+        else:
+            st.session_state["joseon_restoration_candidates"] = [
+                "吳益泳啓曰, 右副承旨李軒卿, 今日不爲仕進, 卽爲牌招, 何如? 傳曰, 允.",
+                "尹相翊啓曰, 右副承旨李軒卿, 今日不爲仕進, 卽爲牌招, 何如? 傳曰, 允.",
+                "李鍾淳啓曰, 右副承旨李軒卿, 今日不爲仕進, 卽爲牌招, 何如? 傳曰, 允.",
+                "吳益泳啓曰, 右副承旨李軒卿, 今日不爲仕進, 竝卽牌招, 何如? 傳曰, 允.",
+                "尹相翊啓曰, 右副承旨李軒卿, 今日不爲仕進, 竝卽牌招, 何如? 傳曰, 允.",
+                "李鍾淳啓曰, 右副承旨李軒卿, 今日不爲仕進, 仍爲牌招, 何如? 傳曰, 允.",
+                "吳益泳啓曰, 右副承旨李軒卿, 今日不爲仕進, 卽爲牌招, 何如? 傳曰, 可.",
+                "尹相翊啓曰, 右副承旨李軒卿, 今日不爲仕進, 卽爲牌招, 何如? 傳曰, 可.",
+                "李鍾淳啓曰, 右副承旨李軒卿, 今日不爲仕進, 卽爲牌招, 何如? 傳曰, 可.",
+                "吳益泳啓曰, 右副承旨李軒卿, 今日不爲仕進, 卽爲牌招, 何如? 傳曰, 允. 又啓曰, 以今日例爲之, 何如? 傳曰, 允.",
+            ]
+
+        st.session_state["joseon_selected_candidate_idx"] = 0
+        st.session_state["joseon_restored_text"] = st.session_state["joseon_restoration_candidates"][0]
+        st.success("10개의 복원 후보가 생성되었습니다.")
+
+    candidates = st.session_state.get("joseon_restoration_candidates", [])
+    if not candidates:
+        st.info("'복원 실행' 버튼을 눌러 복원 결과를 확인하세요.")
+        return
+
+    st.markdown('<div class="panel-title">복원 후보</div>', unsafe_allow_html=True)
+
+    # ===== 2-Column 카드 그리드 (보기 전용) =====
+    n = len(candidates)
+    for row_start in range(0, n, 2):
+        cols = st.columns(2, gap="large")
+
+        for j in range(2):
+            i = row_start + j
+            if i >= n:
+                break
+
+            cand = candidates[i]
+
+            if is_jrs_1661_4_3:
+                rendered = highlight_restored_name_2(cand)
+            elif is_jrs_1883_3_17:
+                rendered = highlight_restored_place_3(cand)
+            elif is_jrs_1701_11_29:
+                rendered = highlight_before_phrase_2(cand, "中未準限")
+            else:
+                rendered = cand
+
+            with cols[j]:
+                st.markdown(
+                    f"""
+                    <div class="candidate-card">
+                        <div class="candidate-rank">후보 {i+1}</div>
+                        <div class="candidate-text">{rendered}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
