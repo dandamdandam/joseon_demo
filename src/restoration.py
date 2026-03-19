@@ -231,7 +231,7 @@ def joseon_restoration_page() -> None:
         start = k - n
         restored = sentence[start:k]
         return sentence[:start] + f'<span class="hl">{restored}</span>' + sentence[k:]
-        st.markdown(
+    st.markdown(    
         '<div class="hero-title">ARI: Restoration for Joseon Historical Documents</div>',
         unsafe_allow_html=True
     )
