@@ -29,10 +29,7 @@ def get_mock_ocr_text(filename: str) -> str:
     else:
         # 기본 예시 (천자문 앞부분)
         return (
-            "天地玄黃 (천지현황) : 하늘은 검고 땅은 누르며\n"
-            "宇宙洪荒 (우주홍황) : 우주는 넓고 거치니라\n"
-            "日月盈昃 (일월영측) : 해와 달은 차고 기울며\n"
-            "辰宿列張 (진숙열장) : 별들은 넓게 펴져 있도다"
+            "(오류) 훼손된 문자가 포함되어 있습니다."
         )
 
 def get_mock_translation_text(filename: str) -> Dict[str, str]:
@@ -54,8 +51,8 @@ def get_mock_translation_text(filename: str) -> Dict[str, str]:
         }
     else:
         return {
-            "gemini": "dkdk",
-            "herit": "dldl"
+            "gemini": "(오류)",
+            "herit": "(오류)"
         }
 
 def joseon_translation_page() -> None:

@@ -444,10 +444,10 @@ def home_page() -> None:
     )
 
     with col_ari:
-        components.html(ari_html, height=2000)
+        components.html(ari_html, height=1050)
 
     with col_herit:
-        components.html(herit_html, height=2000)
+        components.html(herit_html,height=1050)
 
 def main() -> None:
     page = sidebar_tabs()
