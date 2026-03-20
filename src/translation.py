@@ -71,14 +71,19 @@ def joseon_translation_page() -> None:
         /* Base Container & Animation */
         
         .hero-title {
-            font-size: 42px;
+            font-size: 48px;
             font-weight: 900;
             background: linear-gradient(120deg, #1E50A3, #2960b4, #123e85);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.5px;
             margin-bottom: 8px;
-            line-height: 1.2;
+            line-height: 1.1;
+        }
+
+        textarea {
+            font-size: 20px !important;
+            line-height: 1.6 !important;
         }
         
         .hero-sub {
@@ -241,8 +246,11 @@ def joseon_translation_page() -> None:
         }
 
         .result-content {
-            font-size: 16px;
-            line-height: 1.7;
+            font-size: 22px;
+            line-height: 1.8;
+            color: #1e293b;
+            font-weight: 600;
+        }
             color: #1e293b;
         }
 
@@ -261,7 +269,7 @@ def joseon_translation_page() -> None:
 
     # --- Header & KPIs ---
     st.markdown(
-        '<div class="hero-title" style="font-size:48px; font-weight:800; line-height:1.1;">HERIT: Translation for Joseon Historical Documents</div>',
+        '<div class="hero-title" style="font-size:48px; font-weight:800; line-height:1.1;">HERIT: 고문서 번역 특화 AI</div>',
         unsafe_allow_html=True
     )
     st.markdown(
@@ -352,7 +360,7 @@ def joseon_translation_page() -> None:
                         background: rgba(137, 197, 213, 0.12);
                         border: 1px solid rgba(137, 197, 213, 0.35);
                         color: #334155;
-                        font-size: 16px;
+                        font-size: 18px;
                         line-height: 1.8;
                     ">
                         <b style="color:#1E50A3;">원문 뜻 (한국어 번역)</b><br>
@@ -395,8 +403,8 @@ def joseon_translation_page() -> None:
                         <div class="result-content">
                             {trans_result.get("herit", "")}
                             <hr style="margin: 14px 0; border: none; border-top: 1px dashed rgba(137, 197, 213, 0.5);">
-                            <span style="font-size: 14.5px; color: #1E50A3; font-weight: 700;">한국어 직역</span><br>
-                            <span style="font-size: 15px; color: #334155; font-weight: 500;">{trans_result.get("herit_kor", "")}</span>
+                            <span style="font-size: 15px; color: #1E50A3; font-weight: 800;">한국어 직역</span><br>
+                            <span style="font-size: 17px; color: #64748b; font-weight: 500;">{trans_result.get("herit_kor", "")}</span>
                         </div>
                     </div>
                 ''', unsafe_allow_html=True)
@@ -409,8 +417,8 @@ def joseon_translation_page() -> None:
                         <div class="result-content">
                             {trans_result.get("gemini", "")}
                             <hr style="margin: 14px 0; border: none; border-top: 1px dashed rgba(255, 150, 150, 0.5);">
-                            <span style="font-size: 14.5px; color: #d15656; font-weight: 700;">한국어 직역</span><br>
-                            <span style="font-size: 15px; color: #334155; font-weight: 500;">{trans_result.get("gemini_kor", "")}</span>
+                            <span style="font-size: 15px; color: #d15656; font-weight: 800;">한국어 직역</span><br>
+                            <span style="font-size: 17px; color: #64748b; font-weight: 500;">{trans_result.get("gemini_kor", "")}</span>
                         </div>
                     </div>
                 ''', unsafe_allow_html=True)
