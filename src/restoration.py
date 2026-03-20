@@ -263,6 +263,18 @@ def joseon_restoration_page() -> None:
         key="joseon_image_uploader",
         label_visibility="collapsed",
     )
+    
+    if uploaded is not None:
+        current_uploaded_name = uploaded.name
+        previous_uploaded_name = st.session_state.get("joseon_uploaded_name")
+
+        if previous_uploaded_name != current_uploaded_name:
+            st.session_state["joseon_uploaded_name"] = current_uploaded_name
+            st.session_state.pop("joseon_ocr_text", None)
+            st.session_state.pop("joseon_restoration_candidates", None)
+            st.session_state.pop("joseon_selected_candidate_idx", None)
+            st.session_state.pop("joseon_restored_text", None)
+
 
     if uploaded is None:
         st.info("이미지를 업로드하면 OCR 처리된 텍스트 확인이 가능합니다.")
@@ -428,7 +440,6 @@ def joseon_restoration_page() -> None:
 
     st.markdown('<div class="panel-title">복원 후보</div>', unsafe_allow_html=True)
 
-    # ===== 2-Column 카드 그리드 (보기 전용) =====
     n = len(candidates)
     for row_start in range(0, n, 2):
         cols = st.columns(2, gap="large")
