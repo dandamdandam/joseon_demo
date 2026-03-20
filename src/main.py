@@ -126,7 +126,7 @@ def sidebar_tabs() -> str:
 
     st.sidebar.markdown(
         """
-        <div class="ari-brand">Joseon Historical Documents<br/>Research</div>
+        <div class="ari-brand">조선 고문서 연구</div>
         <div class="ari-sub">DAMI Lab</div>
         <style> .st-emotion-cache-pa57uv > img{border-radius:0;} </style>
         """,
@@ -135,7 +135,7 @@ def sidebar_tabs() -> str:
 
     page = st.sidebar.radio(
         "Menu",
-        ["Home", "Joseon Restoration", "Joseon Translation"],
+        ["조선 고문서 연구", "조선 고문서 복원 연구", "조선 고문서 번역 연구"],
         label_visibility="collapsed",
         index=0,
     )
@@ -170,7 +170,7 @@ def home_page() -> None:
             line-height: 1.1;
         }
         </style>
-        <div class="main-hero-title">Joseon Historical Documents Research</div>
+        <div class="main-hero-title">조선 고문서 연구</div>
         """,
         unsafe_allow_html=True,
     )
@@ -452,9 +452,9 @@ def home_page() -> None:
 def main() -> None:
     page = sidebar_tabs()
 
-    if page == "Home":
+    if page == "조선 고문서 연구":
         home_page()
-    elif page == "Joseon Restoration":
+    elif page == "조선 고문서 복원 연구":
         joseon_restoration_page()
     else:
         joseon_translation_page()

@@ -21,6 +21,11 @@ def joseon_restoration_page() -> None:
             line-height: 1.1;
         }
         
+        textarea {
+            font-size: 20px !important;
+            line-height: 1.6 !important;
+        }
+        
         .hero-sub {
             color: #64748b;
             font-size: 15px;
@@ -188,9 +193,18 @@ def joseon_restoration_page() -> None:
             padding-bottom: 8px;
         }
         .candidate-text{
-            font-size: 18px;
-            line-height: 1.7;
+            font-size: 22px;
+            line-height: 1.8;
             color: #1e293b;
+            font-weight: 600;
+        }
+        
+        .candidate-desc{
+            margin-top: 10px;
+            font-size: 17px;
+            line-height: 1.6;
+            color: #64748b;
+            font-weight: 500;
         }
 
         /* Alert/Info Overrides */
@@ -232,20 +246,20 @@ def joseon_restoration_page() -> None:
         restored = sentence[start:k]
         return sentence[:start] + f'<span class="hl">{restored}</span>' + sentence[k:]
     st.markdown(    
-        '<div class="hero-title">ARI: Restoration for Joseon Historical Documents</div>',
+        '<div class="hero-title">ARI: 조선 고문서 복원 AI</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="hero-sub">조선시대 고문서의 훼손 이미지 업로드 시, OCR 및 ARI 기반 복원을 진행하여 상위 10개의 복원 후보를 생성합니다.</div>',
+        '<div class="hero-sub">조선시대 고문서의 훼손 이미지 업로드 시, 글자 인식 및 ARI 기반 복원을 진행하여 상위 복원 후보를 생성합니다.</div>',
         unsafe_allow_html=True,
     )
 
     st.markdown(
         """
         <div class="kpi-wrap">
-            <div class="kpi"><p class="k">복원 파이프라인</p><p class="v">이미지 → OCR → 복원</p></div>
-            <div class="kpi"><p class="k">결과</p><p class="v">상위 10개의 복원 후보</p></div>
+            <div class="kpi"><p class="k">복원 파이프라인</p><p class="v">이미지 → 글자 인식 → 복원</p></div>
+            <div class="kpi"><p class="k">결과</p><p class="v">복원 후보 리스트</p></div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -253,7 +267,7 @@ def joseon_restoration_page() -> None:
 
     # ---------------- Step 1 ----------------
     st.markdown(
-        '<p class="section-title"><span class="section-num">1)</span><span class="section-text">이미지 업로드 및 OCR</span> <span class="badge">Step 1</span></p>',
+        '<p class="section-title"><span class="section-num">1)</span><span class="section-text">이미지 업로드 및 글자 인식</span> <span class="badge">Step 1</span></p>',
         unsafe_allow_html=True,
     )
 
@@ -277,7 +291,7 @@ def joseon_restoration_page() -> None:
 
 
     if uploaded is None:
-        st.info("이미지를 업로드하면 OCR 처리된 텍스트 확인이 가능합니다.")
+        st.info("이미지를 업로드하면 인식된 텍스트 확인이 가능합니다.")
         st.markdown("---")
         st.markdown(
             '<p class="section-title"><span class="section-num">2)</span><span class="section-text">조선 고문서 복원</span> <span class="badge">Step 2</span></p>',
@@ -291,19 +305,19 @@ def joseon_restoration_page() -> None:
     is_jrs_1650_6_11 = stem == "jrs_1650-6-11_17"
     is_jrs_1688_4_26 = stem == "jrs_1688-4-26_10"
 
-    left, right = st.columns([1, 1], gap="large")
+    left, right = st.columns([0.75, 1.25], gap="small")
 
     with left:
         st.markdown('<div class="panel-title">이미지 미리보기</div>', unsafe_allow_html=True)
-        st.image(uploaded, use_container_width=True)
+        st.image(uploaded, width=500)
 
     with right:
-        st.markdown('<div class="panel-title">OCR 결과</div>', unsafe_allow_html=True)
-        st.markdown('<div class="panel-sub">OCR 실행 후 결과를 확인할 수 있습니다.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="panel-title">글자 인식 결과</div>', unsafe_allow_html=True)
+        st.markdown('<div class="panel-sub">글자 인식 후 결과를 확인할 수 있습니다.</div>', unsafe_allow_html=True)
 
         c1, c2 = st.columns([1, 1])
         with c1:
-            run_ocr = st.button("OCR 실행", use_container_width=True, key="run_ocr_btn")
+            run_ocr = st.button("글자 인식 실행", use_container_width=True, key="run_ocr_btn")
         with c2:
             clear_ocr = st.button("결과 초기화", use_container_width=True, key="clear_ocr_btn")
 
@@ -314,7 +328,7 @@ def joseon_restoration_page() -> None:
             st.session_state.pop("joseon_restored_text", None)
 
         if run_ocr:
-            with st.spinner("OCR 진행중..."):
+            with st.spinner("글자 인식중..."):
                 time.sleep(random.uniform(2.5, 3.5))
 
             if is_jrs_1651_7_11:
@@ -333,13 +347,13 @@ def joseon_restoration_page() -> None:
                 st.session_state["joseon_ocr_text"] = (
                     "Internal Server Error"
                 )
-            st.success("OCR 완료")
+            st.success("글자 인식 완료")
 
         ocr_text = st.session_state.get("joseon_ocr_text", "")
         if ocr_text:
             st.text_area("ocr_text_area", ocr_text, height=180, label_visibility="collapsed")
         else:
-            st.info("OCR을 실행하여 결과를 생성해 주세요.")
+            st.info("글자 인식을 진행해 주세요.")
 
     st.markdown("---")
 
@@ -348,15 +362,40 @@ def joseon_restoration_page() -> None:
         '<p class="section-title"><span class="section-num">2)</span><span class="section-text">복원</span> <span class="badge">Step 2</span></p>',
         unsafe_allow_html=True,
     )
-    st.caption("OCR 결과를 입력으로 받아 ARI가 복원 후보를 생성합니다.")
+    st.caption("인식 결과를 입력으로 받아 ARI가 복원 후보를 생성합니다.")
 
     ocr_text = st.session_state.get("joseon_ocr_text", "")
     if not ocr_text:
-        st.warning("먼저 OCR을 실행해 주세요.")
+        st.warning("먼저 글자 인식을 실행해 주세요.")
         return
 
+    # st.markdown('<div class="panel-title">훼손 문서</div>', unsafe_allow_html=True)
+    # st.text_area("damaged_from_ocr", ocr_text, height=120, label_visibility="collapsed")
+    
     st.markdown('<div class="panel-title">훼손 문서</div>', unsafe_allow_html=True)
     st.text_area("damaged_from_ocr", ocr_text, height=120, label_visibility="collapsed")
+
+    if is_jrs_1651_7_11:
+        st.markdown(
+            """
+            <div style="
+                margin-top: 8px;
+                margin-bottom: 20px;
+                padding: 14px 16px;
+                border-radius: 12px;
+                background: rgba(137, 197, 213, 0.12);
+                border: 1px solid rgba(137, 197, 213, 0.35);
+                color: #334155;
+                font-size: 16px;
+                line-height: 1.8;
+            ">
+                <b style="color:#1E50A3;">한국어 번역</b><br>
+                정기 과거 시험의 2차 시험과 『소학』, 『□례』 등에 관한 구술시험을 담당할 시험관 후보 명단을 두고,
+                왕이 남현에게 전하기를 “명성이 높고 학식이 널리 알려진 사람으로 선발하라”라고 하였다.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
     a, b = st.columns([1, 1])
     with a:
@@ -380,14 +419,6 @@ def joseon_restoration_page() -> None:
             st.session_state["joseon_restoration_candidates"] = [
                 "以式年監試覆試, 小學家禮考講試官望, 傳于南翧曰, 以有名稱.",
                 "以式年監試覆試, 小學儀禮考講試官望, 傳于南翧曰, 以有名稱.",
-                "以式年監試覆試, 小學冠禮考講試官望, 傳于南翧曰, 以有名稱.",
-                "以式年監試覆試, 小學中禮考講試官望, 傳于南翧曰, 以有名稱.",
-                "以式年監試覆試, 小學學禮考講試官望, 傳于南翧曰, 以有名稱.",
-                "以式年監試覆試, 小學大禮考講試官望, 傳于南翧曰, 以有名稱.",
-                "以式年監試覆試, 小學孝禮考講試官望, 傳于南翧曰, 以有名稱.",
-                "以式年監試覆試, 小學書禮考講試官望, 傳于南翧曰, 以有名稱.",
-                "以式年監試覆試, 小學周禮考講試官望, 傳于南翧曰, 以有名稱.",
-                "以式年監試覆試, 小學內禮考講試官望, 傳于南翧曰, 以有名稱.",
             ]
         elif is_jrs_1650_6_11:
             st.session_state["joseon_restoration_candidates"] = [
@@ -450,9 +481,16 @@ def joseon_restoration_page() -> None:
                 break
 
             cand = candidates[i]
+            candidate_desc = ""
+
 
             if is_jrs_1651_7_11:
                 rendered = highlight_after_phrase(cand, "小學", 1)
+
+                if i == 0:
+                    candidate_desc = "『가례』로 예측함"
+                elif i == 1:
+                    candidate_desc = "『의례』로 예측함"
 
             elif is_jrs_1650_6_11:
                 rendered = highlight_after_phrase(cand, "保放罪人", 1)
@@ -467,8 +505,9 @@ def joseon_restoration_page() -> None:
                 st.markdown(
                     f"""
                     <div class="candidate-card">
-                        <div class="candidate-rank">후보 {i+1}</div>
+                        <div class="candidate-rank">{i+1}위 후보</div>
                         <div class="candidate-text">{rendered}</div>
+                        <div class="candidate-desc">{candidate_desc}</div>
                     </div>
                     """,
                     unsafe_allow_html=True,
