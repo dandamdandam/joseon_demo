@@ -88,7 +88,7 @@ def sidebar_tabs() -> str:
         }
 
         /* radio를 탭처럼 보이게 */
-        div.stElementContainer.element-container.st-emotion-cache-zh2fnc.ek2vi381 {
+        div.stElementContainer.element-container {
             width: 100%;
         }
         div[role="radiogroup"] > label {
@@ -348,7 +348,7 @@ def home_page() -> None:
         <div class="chips">
           <div class="chip">관련 문헌 기반 RAG</div>
           <div class="chip">개체명 복원</div>
-          <div class="chip">상위 10개 복원 후보 제공</div>
+          <div class="chip">상위 2개 복원 후보 제공</div>
         </div>
 
         <div class="grid">
@@ -364,7 +364,7 @@ def home_page() -> None:
             <h4>출력 형태</h4>
             <ul>
               <li>단일 정답이 아닌 상위 후보들을 순위로 제시해 전문가 검토가 용이합니다.</li>
-              <li>상위 10개의 복원 후보를 제공하여 전문가들의 탐색 비용과 복원 소요 시간을 절감할 수 있습니다.</li>
+              <li>상위 2개의 복원 후보를 제공하여 전문가들의 탐색 비용과 복원 소요 시간을 절감할 수 있습니다.</li>
             </ul>
           </div>
         </div>
@@ -388,7 +388,7 @@ def home_page() -> None:
           <div class="step" style="flex: 1; display: flex; flex-direction: column;">
             <div class="k">Step 3</div>
             <div class="t">복원 후보 제공</div>
-            <div class="d">훼손 문서와 관련 문서들을 입력으로 ARI가 상위 10개의 후보를 제공합니다.</div>
+            <div class="d">훼손 문서와 관련 문서들을 입력으로 ARI가 상위 2개의 후보를 제공합니다.</div>
           </div>
       </div>
     </div>

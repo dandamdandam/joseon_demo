@@ -462,7 +462,7 @@ def joseon_restoration_page() -> None:
 
         st.session_state["joseon_selected_candidate_idx"] = 0
         st.session_state["joseon_restored_text"] = st.session_state["joseon_restoration_candidates"][0]
-        st.success("10개의 복원 후보가 생성되었습니다.")
+        st.success("2개의 복원 후보가 생성되었습니다.")
 
     candidates = st.session_state.get("joseon_restoration_candidates", [])
     if not candidates:
