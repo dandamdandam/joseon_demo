@@ -37,22 +37,30 @@ def get_mock_translation_text(filename: str) -> Dict[str, str]:
     if "어사한" in filename or "eosoahan" in filename.lower():
         return {
             "gemini": "Yu Yu thought of Han, and the capital and outer areas followed suit.",
-            "herit": "The king pardoned Eo Sahan and allowed him to reside in a place of his choice outside the capital."
+            "gemini_kor": "유유는 한을 생각했고, 수도와 외곽 지역이 그 뒤를 이었다.",
+            "herit": "The king pardoned Eo Sahan and allowed him to reside in a place of his choice outside the capital.",
+            "herit_kor": "왕명으로 어사한을 사면하고 수도 밖 원하는 곳에 거주하도록 허락하였다."
         }
     elif "방자" in filename or "bangja" in filename.lower():
         return {
             "gemini": "It is appropriate to provide meals, a house, and servants for cooking and fetching water.",
-            "herit": "We should provide them with meals, female palace servants, cooks, and water carriers."
+            "gemini_kor": "식사와 집, 그리고 요리와 물 긷는 하인들을 제공하는 것이 적절하다.",
+            "herit": "We should provide them with meals, female palace servants, cooks, and water carriers.",
+            "herit_kor": "우리는 그들에게 식사와 궁녀(방자), 요리사, 그리고 물 긷는 사람들을 제공해야 한다."
         }
     elif "임진왜란" in filename or "imjin" in filename.lower():
         return {
             "gemini": "The Japanese invaders launched a major incursion, capturing Busan Jin, where Admiral Jeong Pal died in battle. They then captured Dongnae-bu, where Governor Song Sang-hyeon died.",
-            "herit": "Japanese pirates invaded in large numbers, captured Busan Garrison, and killed Second Commander Jeong Bal in battle. They also captured Dongnae Prefecture and killed Magistrate Song Sanghyeon."
+            "gemini_kor": "일본 침략자들이 대규모 침공을 감행하여 부산진을 함락시켰고, 그곳에서 제독 정팔이 전사했다. 그 후 동래부를 함락시켰고 장관 송상현이 사망했다.",
+            "herit": "Japanese pirates invaded in large numbers, captured Busan Garrison, and killed Second Commander Jeong Bal in battle. They also captured Dongnae Prefecture and killed Magistrate Song Sanghyeon.",
+            "herit_kor": "왜구가 대규모로 침략하여 부산진을 함락시키고 첨사 정발은 전사했다. 이들은 또한 동래부를 함락시키고 부사 송상현을 전사시켰다."
         }
     else:
         return {
             "gemini": "(오류)",
-            "herit": "(오류)"
+            "gemini_kor": "",
+            "herit": "(오류)",
+            "herit_kor": ""
         }
 
 def joseon_translation_page() -> None:
@@ -257,14 +265,14 @@ def joseon_translation_page() -> None:
         unsafe_allow_html=True
     )
     st.markdown(
-        '<div class="hero-sub">고문서 이미지 업로드 시, OCR을 진행하여 HERIT과 Gemini-2.5-Flash의 번역 결과를 대조 제공합니다.</div>',
+        '<div class="hero-sub">고문서 이미지 업로드 시, OCR(글자 인식)을 진행하여 HERIT과 Gemini 모델의 번역 결과를 대조 제공합니다.</div>',
         unsafe_allow_html=True,
     )
     st.markdown(
         """
         <div class="kpi-wrap">
-            <div class="kpi"><p class="k">번역 파이프라인</p><p class="v">이미지 → OCR → 번역</p></div>
-            <div class="kpi"><p class="k">지원 모델</p><p class="v">HERIT, Gemini-2.5-flash</p></div>
+            <div class="kpi"><p class="k">번역 파이프라인</p><p class="v">이미지 → 글자 인식 → 번역</p></div>
+            <div class="kpi"><p class="k">지원 모델</p><p class="v">HERIT, Gemini</p></div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -272,7 +280,7 @@ def joseon_translation_page() -> None:
 
     # --- Step 1: 이미지 업로드 및 OCR ---
     st.markdown(
-        '<p class="section-title"><span class="section-num">1)</span><span class="section-text">이미지 업로드 및 OCR</span> <span class="badge">Step 1</span></p>',
+        '<p class="section-title"><span class="section-num">1)</span><span class="section-text">이미지 업로드 및 글자 인식</span> <span class="badge">Step 1</span></p>',
         unsafe_allow_html=True,
     )
     
@@ -291,7 +299,7 @@ def joseon_translation_page() -> None:
         st.session_state.pop("trans_result", None)
 
     if uploaded_file is None:
-        st.info("이미지를 업로드하면 OCR 및 번역 기능을 사용할 수 있습니다.")
+        st.info("이미지를 업로드하면 글자 인식 및 번역 기능을 사용할 수 있습니다.")
         st.markdown("---")
         # Step 2 Placeholder
         st.markdown(
@@ -310,22 +318,51 @@ def joseon_translation_page() -> None:
         st.image(uploaded_file, use_container_width=True)
 
     with col2:
-        st.markdown('<div class="panel-title">OCR 결과</div>', unsafe_allow_html=True)
-        st.markdown('<div class="panel-sub">OCR 실행 후 결과를 확인할 수 있습니다.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="panel-title">글자 인식 결과</div>', unsafe_allow_html=True)
+        st.markdown('<div class="panel-sub">글자 인식 실행 후 결과를 확인할 수 있습니다.</div>', unsafe_allow_html=True)
 
-        if st.button("OCR 실행", use_container_width=True):
-            with st.spinner("OCR 분석 중..."):
+        if st.button("글자 인식 실행", use_container_width=True):
+            with st.spinner("글자 인식 중..."):
                 time.sleep(random.uniform(2.5, 3.5))
                 st.session_state["trans_ocr_result"] = get_mock_ocr_text(filename)
-                # OCR이 새로 실행되면 기존 번역 결과는 초기화
+                # 글자 인식이 새로 실행되면 기존 번역 결과는 초기화
                 if "trans_result" in st.session_state:
                     del st.session_state["trans_result"]
         
         ocr_text = st.session_state.get("trans_ocr_result", "")
         if ocr_text:
             st.text_area("ocr_result_area", value=ocr_text, height=20, label_visibility="collapsed")
+            
+            kor_translation = ""
+            if "어사한" in filename or "eosoahan" in filename.lower():
+                kor_translation = "어사한을 용서하여 경외종편하였다."
+            elif "방자" in filename or "bangja" in filename.lower():
+                kor_translation = "마땅히 밥과 방자, 밥 짓고 물 긷는 사람 등을 주어야 한다.</span>"
+            elif "임진" in filename or "imjin" in filename.lower():
+                kor_translation = "왜적이 크게 군사를 일으켜 침략해 와서 부산진을 함락시켰는데 첨사 정발이 전사하고, 이어 동래부가 함락되면서 부사 송상현도 전사하였다."
+
+            if kor_translation:
+                st.markdown(
+                    f"""
+                    <div style="
+                        margin-top: 8px;
+                        margin-bottom: 20px;
+                        padding: 14px 16px;
+                        border-radius: 12px;
+                        background: rgba(137, 197, 213, 0.12);
+                        border: 1px solid rgba(137, 197, 213, 0.35);
+                        color: #334155;
+                        font-size: 16px;
+                        line-height: 1.8;
+                    ">
+                        <b style="color:#1E50A3;">원문 뜻 (한국어 번역)</b><br>
+                        {kor_translation}
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
         else:
-            st.info("OCR 실행 버튼을 눌러 텍스트를 추출하세요.")
+            st.info("글자 인식 실행 버튼을 눌러 텍스트를 추출하세요.")
 
         # --- Step 2: 번역 ---
         st.markdown(
@@ -334,7 +371,7 @@ def joseon_translation_page() -> None:
         )
         
         if not ocr_text:
-            st.warning("먼저 OCR을 실행하여 텍스트를 추출해 주세요.")
+            st.warning("먼저 글자 인식을 실행하여 텍스트를 추출해 주세요.")
             return
 
         st.caption("추출된 텍스트를 바탕으로 AI 번역을 수행합니다.")
@@ -355,15 +392,25 @@ def joseon_translation_page() -> None:
                         <div class="result-header">
                             <span style="font-size: 18px;">🏛️</span> HERIT 번역
                         </div>
-                        <div class="result-content">{trans_result.get("herit", "")}</div>
+                        <div class="result-content">
+                            {trans_result.get("herit", "")}
+                            <hr style="margin: 14px 0; border: none; border-top: 1px dashed rgba(137, 197, 213, 0.5);">
+                            <span style="font-size: 14.5px; color: #1E50A3; font-weight: 700;">한국어 직역</span><br>
+                            <span style="font-size: 15px; color: #334155; font-weight: 500;">{trans_result.get("herit_kor", "")}</span>
+                        </div>
                     </div>
                 ''', unsafe_allow_html=True)
             with r_col2:
                 st.markdown(f'''
                     <div class="result-card secondary-card">
                         <div class="result-header">
-                            <span style="font-size: 18px;">✨</span> Gemini-2.5-flash 번역
+                            <span style="font-size: 18px;">✨</span> Gemini 번역
                         </div>
-                        <div class="result-content">{trans_result.get("gemini", "")}</div>
+                        <div class="result-content">
+                            {trans_result.get("gemini", "")}
+                            <hr style="margin: 14px 0; border: none; border-top: 1px dashed rgba(255, 150, 150, 0.5);">
+                            <span style="font-size: 14.5px; color: #d15656; font-weight: 700;">한국어 직역</span><br>
+                            <span style="font-size: 15px; color: #334155; font-weight: 500;">{trans_result.get("gemini_kor", "")}</span>
+                        </div>
                     </div>
                 ''', unsafe_allow_html=True)

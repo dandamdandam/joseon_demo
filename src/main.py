@@ -83,7 +83,14 @@ def sidebar_tabs() -> str:
             font-weight: 500;
         }
 
+        div[role="radiogroup"] {
+            width: 100%;
+        }
+
         /* radio를 탭처럼 보이게 */
+        div.stElementContainer.element-container.st-emotion-cache-zh2fnc.ek2vi381 {
+            width: 100%;
+        }
         div[role="radiogroup"] > label {
             border: 1px solid rgba(137, 197, 213, 0.4);
             border-radius: 12px;
@@ -93,6 +100,13 @@ def sidebar_tabs() -> str:
             transition: 120ms ease-in-out;
             box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.02);
             color: #1e293b;
+            width: 100%;
+            text-align: center !important;
+            box-sizing: border-box;
+        }
+        div[role="radiogroup"] > label > .st-b8 {
+            width: 100%;
+            padding-left: 0;
         }
         div[role="radiogroup"] > label:hover {
             background: rgba(137, 197, 213, 0.1);
@@ -135,7 +149,7 @@ def sidebar_tabs() -> str:
 
     page = st.sidebar.radio(
         "Menu",
-        ["조선 고문서 연구", "조선 고문서 복원 연구", "조선 고문서 번역 연구"],
+        ["소개", "조선 고문서 복원 연구", "조선 고문서 번역 연구"],
         label_visibility="collapsed",
         index=0,
     )
@@ -310,7 +324,7 @@ def home_page() -> None:
     <div class="card-wrap">
       <div class="card">
         <div class="title">
-        ARI <span style="font-size: 0.78em; font-weight: bolder; opacity: 0.95;">(Archive Restoration Intelligence)</span>
+        ARI <span style="font-size: 0.78em; font-weight: bolder; opacity: 0.95;">(조선 고문서 복원 AI)</span>
         </div>
         <!-- Method Image Inserted Here -->
         
@@ -387,7 +401,7 @@ def home_page() -> None:
     <div class="card-wrap">
       <div class="card">
         <div class="title">
-        HERIT <span style="font-size: 0.78em; font-weight: bolder; opacity: 0.95;">(Hanja-English RAG-based Intelligent Translation model)</span>
+        HERIT <span style="font-size: 0.78em; font-weight: bolder; opacity: 0.95;">(고문서 번역 특화 AI)</span>
         </div>
         <!-- Method Image Inserted Here -->
         <img src="data:image/png;base64,{herit_b64}" style="width: 100%; 
@@ -452,7 +466,7 @@ def home_page() -> None:
 def main() -> None:
     page = sidebar_tabs()
 
-    if page == "조선 고문서 연구":
+    if page == "소개":
         home_page()
     elif page == "조선 고문서 복원 연구":
         joseon_restoration_page()
