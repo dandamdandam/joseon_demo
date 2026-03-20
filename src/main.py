@@ -184,7 +184,7 @@ def home_page() -> None:
             line-height: 1.1;
         }
         </style>
-        <div class="main-hero-title">조선 고문서 연구</div>
+        <div class="main-hero-title">고문서 복원 및 번역 연구</div>
         """,
         unsafe_allow_html=True,
     )

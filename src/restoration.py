@@ -22,8 +22,33 @@ def joseon_restoration_page() -> None:
         }
         
         textarea {
-            font-size: 20px !important;
+            font-size: 18px !important;
             line-height: 1.6 !important;
+        }
+        
+        .doc-box {
+            min-height: 160px;
+            padding: 2px 4px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #f3f4f6;
+            font-size: 20px;
+            line-height: 1.6;
+            color: #262730;
+            white-space: pre-wrap;
+            box-sizing: border-box;
+        }
+
+        .doc-box.compact {
+            min-height: 120px;
+        }
+
+        .doc-box .damaged-char {
+            font-size: 32px;
+            font-weight: 300;
+            color: #262730;
+            line-height: 1.2;
+            vertical-align: -3px;
         }
         
         .hero-sub {
@@ -193,7 +218,7 @@ def joseon_restoration_page() -> None:
             padding-bottom: 8px;
         }
         .candidate-text{
-            font-size: 22px;
+            font-size: 24px;
             line-height: 1.8;
             color: #1e293b;
             font-weight: 600;
@@ -201,7 +226,7 @@ def joseon_restoration_page() -> None:
         
         .candidate-desc{
             margin-top: 10px;
-            font-size: 17px;
+            font-size: 15px;
             line-height: 1.6;
             color: #64748b;
             font-weight: 500;
@@ -219,6 +244,9 @@ def joseon_restoration_page() -> None:
         """,
         unsafe_allow_html=True,
     )
+    
+    def emphasize_square(text: str) -> str:
+        return text.replace("□", '<span class="damaged-char">□</span>')
 
     def uploaded_stem(u) -> str:
         try:
@@ -246,7 +274,7 @@ def joseon_restoration_page() -> None:
         restored = sentence[start:k]
         return sentence[:start] + f'<span class="hl">{restored}</span>' + sentence[k:]
     st.markdown(    
-        '<div class="hero-title">ARI: 조선 고문서 복원 AI</div>',
+        '<div class="hero-title">ARI: 훼손된 고문서 복원을 위한 AI</div>',
         unsafe_allow_html=True
     )
 
@@ -294,7 +322,7 @@ def joseon_restoration_page() -> None:
         st.info("이미지를 업로드하면 인식된 텍스트 확인이 가능합니다.")
         st.markdown("---")
         st.markdown(
-            '<p class="section-title"><span class="section-num">2)</span><span class="section-text">조선 고문서 복원</span> <span class="badge">Step 2</span></p>',
+            '<p class="section-title"><span class="section-num">2)</span><span class="section-text">훼손된 부분 복원</span> <span class="badge">Step 2</span></p>',
             unsafe_allow_html=True,
         )
         st.warning("먼저 이미지를 업로드해 주세요.")
@@ -312,7 +340,7 @@ def joseon_restoration_page() -> None:
         st.image(uploaded, width=500)
 
     with right:
-        st.markdown('<div class="panel-title">글자 인식 결과</div>', unsafe_allow_html=True)
+        st.markdown('<div class="panel-title">글자 인식</div>', unsafe_allow_html=True)
         st.markdown('<div class="panel-sub">글자 인식 후 결과를 확인할 수 있습니다.</div>', unsafe_allow_html=True)
 
         c1, c2 = st.columns([1, 1])
@@ -328,7 +356,7 @@ def joseon_restoration_page() -> None:
             st.session_state.pop("joseon_restored_text", None)
 
         if run_ocr:
-            with st.spinner("글자 인식중..."):
+            with st.spinner("글자 인식 중..."):
                 time.sleep(random.uniform(2.5, 3.5))
 
             if is_jrs_1651_7_11:
@@ -351,7 +379,14 @@ def joseon_restoration_page() -> None:
 
         ocr_text = st.session_state.get("joseon_ocr_text", "")
         if ocr_text:
-            st.text_area("ocr_text_area", ocr_text, height=180, label_visibility="collapsed")
+            st.markdown(
+                f"""
+                <div class="doc-box">
+                    {emphasize_square(ocr_text)}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
         else:
             st.info("글자 인식을 진행해 주세요.")
 
@@ -359,7 +394,7 @@ def joseon_restoration_page() -> None:
 
     # ---------------- Step 2 ----------------
     st.markdown(
-        '<p class="section-title"><span class="section-num">2)</span><span class="section-text">복원</span> <span class="badge">Step 2</span></p>',
+        '<p class="section-title"><span class="section-num">2)</span><span class="section-text">훼손된 부분 복원</span> <span class="badge">Step 2</span></p>',
         unsafe_allow_html=True,
     )
     st.caption("인식 결과를 입력으로 받아 ARI가 복원 후보를 생성합니다.")
@@ -369,12 +404,17 @@ def joseon_restoration_page() -> None:
         st.warning("먼저 글자 인식을 실행해 주세요.")
         return
 
-    # st.markdown('<div class="panel-title">훼손 문서</div>', unsafe_allow_html=True)
+    # st.markdown('<div class="panel-title">원본 문서의 글자 인식 결과</div>', unsafe_allow_html=True)
     # st.text_area("damaged_from_ocr", ocr_text, height=120, label_visibility="collapsed")
-    
-    st.markdown('<div class="panel-title">훼손 문서</div>', unsafe_allow_html=True)
-    st.text_area("damaged_from_ocr", ocr_text, height=120, label_visibility="collapsed")
-
+    st.markdown('<div class="panel-title">원본 문서의 글자 인식 결과</div>', unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class="doc-box compact">
+            {emphasize_square(ocr_text)}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     if is_jrs_1651_7_11:
         st.markdown(
             """
@@ -386,7 +426,7 @@ def joseon_restoration_page() -> None:
                 background: rgba(137, 197, 213, 0.12);
                 border: 1px solid rgba(137, 197, 213, 0.35);
                 color: #334155;
-                font-size: 16px;
+                font-size: 17px;
                 line-height: 1.8;
             ">
                 <b style="color:#1E50A3;">한국어 번역</b><br>

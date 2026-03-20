@@ -246,7 +246,7 @@ def joseon_translation_page() -> None:
         }
 
         .result-content {
-            font-size: 22px;
+            font-size: 24px;
             line-height: 1.8;
             color: #1e293b;
             font-weight: 600;
@@ -326,7 +326,7 @@ def joseon_translation_page() -> None:
         st.image(uploaded_file, use_container_width=True)
 
     with col2:
-        st.markdown('<div class="panel-title">글자 인식 결과</div>', unsafe_allow_html=True)
+        st.markdown('<div class="panel-title">글자 인식</div>', unsafe_allow_html=True)
         st.markdown('<div class="panel-sub">글자 인식 실행 후 결과를 확인할 수 있습니다.</div>', unsafe_allow_html=True)
 
         if st.button("글자 인식 실행", use_container_width=True):
@@ -343,7 +343,7 @@ def joseon_translation_page() -> None:
             
             kor_translation = ""
             if "어사한" in filename or "eosoahan" in filename.lower():
-                kor_translation = "어사한을 용서하여 경외종편하였다."
+                kor_translation = "어사한을 용서하여 경외종편(추방하여 서울밖에서 살게함)하였다."
             elif "방자" in filename or "bangja" in filename.lower():
                 kor_translation = "마땅히 밥과 방자, 밥 짓고 물 긷는 사람 등을 주어야 한다.</span>"
             elif "임진" in filename or "imjin" in filename.lower():
