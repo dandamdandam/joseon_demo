@@ -46,7 +46,7 @@ def joseon_restoration_page() -> None:
         .doc-box .damaged-char {
             font-size: 32px;
             font-weight: 300;
-            color: #262730;
+            color: red;
             line-height: 1.2;
             vertical-align: -3px;
         }
